@@ -18,12 +18,9 @@
 	<classpathentry kind="lib" path="lib/apacheds/shared-ldap-constants-0.9.15.jar"/>
 	<classpathentry kind="lib" path="lib/apacheds/slf4j-api-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/apacheds/slf4j-log4j12-1.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-base-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-client-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-client-meta-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-contacts-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-contacts-meta-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/gdata-core-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/quartz-1.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/google/deps/google-collect-1.0-rc1.jar"/>
+	<classpathentry kind="lib" path="lib/google/gdata-contacts-meta-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/google/gdata-contacts-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

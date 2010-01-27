@@ -15,8 +15,6 @@ public class Server {
 		try {
 			final DirectoryService service = ldapServer.getDirectoryService();
 			service.startup();
-			final Loader loader = new Loader(service, Constants.PARTITION_ID);
-			loader.load();
 			ldapServer.start();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -30,5 +28,9 @@ public class Server {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public LdapServer getLdapServer() {
+		return ldapServer;
 	}
 }
