@@ -1,0 +1,25 @@
+dn: dc=gmail2ldap,dc=googlecode,dc=com
+objectClass: domain
+objectClass: extensibleObject
+objectClass: top
+dc: gmail2ldap
+
+dn: o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+objectClass: organization
+objectClass: top
+o: gmail
+
+dn: ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: benjamin.francisoud
+
+dn: ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: Users
+
+dn: ou=Groups,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
