@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="./ApacheDsWebApp" default="webapp" basedir=".">
+
+      <property name="apacheds.version" value="1.5.5" />
+      <property name="tomcat.version" value="6.0.18/" />
+
+	<property name="apacheds.home" value="D:/development/ldap/apacheds-1.5.5/Apache Directory Server/" />
+	<property name="tomcat.home" value="D:/development/tomcat/apache-tomcat-5.5.28/" />
+<!--
+	<property name="apacheds.home" value="C:/java/apacheds_${apacheds.version}/" />
+	<property name="tomcat.home" value="C:/java/apache-tomcat-${tomcat.version}/" />
+-->
+	<property name="apacheds.lib" value="${apacheds.home}/lib" />
+	<property name="apacheds.bin" value="${apacheds.home}/bin" />
+	<property name="servlet-api.jar" value="${tomcat.home}/lib/servlet-api.jar" />
+
+	<property name="dir.src" value="./src" />
+	<property name="dir.war" value="./WebContent" />
+	<property name="dir.classes" value="${dir.war}/WEB-INF/classes" />
+	<property name="dir.lib" value="${dir.war}/WEB-INF/lib" />
+	<property name="target.war" value="./ApacheDS.war" />
+
+	<!-- create target dirs -->
+	<target name="prepare">
+		<mkdir dir="${dir.classes}" />
+		<mkdir dir="${dir.lib}" />
+	</target>
+
+	<target name="copyApacheDsLibs">
+		<copy todir="${dir.lib}">
+			<fileset dir="${apacheds.lib}">
+                        <include name="antlr-2.7.7.jar" />
+                        <include name="apacheds-bootstrap-extract-${apacheds.version}.jar" />
+                        <include name="apacheds-bootstrap-partition-${apacheds.version}.jar" />
+				<include name="apacheds-core-${apacheds.version}.jar" />
+                        <include name="apacheds-core-avl-${apacheds.version}.jar" />
+                        <include name="apacheds-core-cursor-${apacheds.version}.jar" />
+                        <include name="apacheds-core-entry-${apacheds.version}.jar" />
+                        <include name="apacheds-core-jndi-${apacheds.version}.jar" />                        
+                        <include name="apacheds-core-shared-${apacheds.version}.jar" />
+                        <include name="apacheds-jdbm-${apacheds.version}.jar" />
+                        <include name="apacheds-jdbm-store-${apacheds.version}.jar" />
+                        <include name="apacheds-protocol-ldap-${apacheds.version}.jar" />
+                        <include name="apacheds-protocol-shared-${apacheds.version}.jar" />
+                        <include name="apacheds-schema-bootstrap-${apacheds.version}.jar" />
+                        <include name="apacheds-schema-registries-${apacheds.version}.jar" />
+                        <include name="apacheds-utils-${apacheds.version}.jar" />
+                        <include name="apacheds-xdbm-base-${apacheds.version}.jar" />
+                        <include name="apacheds-xdbm-search-${apacheds.version}.jar" />
+                        <include name="commons-collections-*.jar" />
+                        <include name="commons-lang-*.jar" />
+                        <include name="log4j-*.jar" />
+                        <include name="mina-core-*.jar" />
+                        <include name="mina-filter-ssl-*.jar" />
+                        <include name="shared-asn1-*.jar" />
+                        <include name="shared-asn1-codec-*.jar" />
+                        <include name="shared-bouncycastle-reduced-*.jar" />
+                        <include name="shared-ldap-*.jar" />
+                        <include name="shared-ldap-constants-*.jar" />
+                        <include name="slf4j-api-*.jar" />
+                        <include name="slf4j-log4j12-*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="prepare,copyApacheDsLibs">
+		<javac srcdir="${dir.src}" destdir="${dir.classes}" includes="**/*.java">
+			<classpath>
+				<pathelement location="${servlet-api.jar}" />
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<copy todir="${dir.classes}">
+			<fileset dir="${dir.src}">
+				<filename name="log4j.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- create WAR-File -->
+	<target name="webapp" depends="compile">
+		<jar destfile="${target.war}">
+			<fileset dir="${dir.war}" />
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dir.classes}" />
+		<delete dir="${dir.lib}" />
+		<delete file="${target.war}" />
+	</target>
+
+</project>

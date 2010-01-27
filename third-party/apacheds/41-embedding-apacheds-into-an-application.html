@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+ 
+        http://www.apache.org/licenses/LICENSE- 2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+
+
+    
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Apache Directory Server v1.5 - 4.1. Embedding ApacheDS into an application</title>
+        <link href="41-embedding-apacheds-into-an-application_fichiers/common_20091029.css" rel="stylesheet" type="text/css">
+        <link href="41-embedding-apacheds-into-an-application_fichiers/green_20091029.css" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="http://directory.apache.org/staticresources/images/server-icon_16x16.png">
+        <!-- Google Analytics -->
+        <script src="41-embedding-apacheds-into-an-application_fichiers/urchin.js" type="text/javascript"></script>  
+        <script type="text/javascript">
+            _uacct = "UA-1358462-1";
+            urchinTracker();
+        </script>
+        <!-- JQuery inclusion -->
+        <script type="text/javascript" src="41-embedding-apacheds-into-an-application_fichiers/jquery.js"></script>
+        <!-- Loading the script for the edit button -->
+        <script>
+            $(document).ready( function()
+            {
+                $("#editZone").hover( function()
+                {
+                    $("#editZoneLink").stop().animate({opacity: 1}, 1000, function()
+                    {
+                        $("#editZoneLink").fadeIn();
+                    });
+                }
+                , function ()
+                {
+                    $("#editZoneLink").stop().fadeOut();
+                });
+            });
+        </script>
+    </head><body>
+        <div id="editZone">
+            <div id="editZoneLink" style="display: none; height: 60px; width: 60px;">
+                <a href="http://cwiki.apache.org/confluence/pages/editpage.action?pageId=102487" title="Edit this page" alt="Edit this page"><img style="position: absolute; right: 5px; top: 5px;" src="41-embedding-apacheds-into-an-application_fichiers/edit_20091029.png" border="0" width="39" height="52"></a>
+            </div>
+        </div>
+        <a name="top"></a>
+        <div id="container">
+            <div id="header">
+                <div id="subProjectsNavBar">
+                    <a href="http://directory.apache.org/">Apache Directory Project</a>
+                    &nbsp;|&nbsp;
+                    <a href="http://directory.apache.org/apacheds/1.5/"><strong>ApacheDS</strong></a>
+                    &nbsp;|&nbsp;
+                    <a href="http://directory.apache.org/studio/">Apache Directory Studio</a>
+                </div><!-- subProjectsNavBar -->
+            </div><!-- header -->
+            <div id="content">
+                <div id="leftColumn">
+                    <div id="navigation">
+<h5><a name="Navigation-ApacheDS1.5"></a>ApacheDS 1.5</h5>
+
+<ul>
+	<li><a href="http://directory.apache.org/apacheds/1.5/index.html" title="Index">Home</a></li>
+	<li><a href="http://directory.apache.org/apacheds/1.5/features.html" title="Features">Features</a></li>
+</ul>
+
+
+<h5><a name="Navigation-Downloads"></a>Downloads</h5>
+<ul>
+	<li><a href="http://directory.apache.org/apacheds/1.5/downloads.html" title="Downloads">ApacheDS 1.5.5</a>&nbsp;&nbsp;<img src="41-embedding-apacheds-into-an-application_fichiers/new_badge.gif" alt="" style="margin-bottom: -3px;" border="0"></li>
+	<li><a href="http://directory.apache.org/apacheds/1.5/download-old-versions.html" title="Download old versions">Older versions</a></li>
+</ul>
+
+
+<h5><a name="Navigation-Documentation"></a>Documentation</h5>
+<ul>
+	<li><a href="http://directory.apache.org/apacheds/1.5/apacheds-v15-basic-users-guide.html" title="ApacheDS v1.5 Basic User's Guide">Basic User's Guide </a></li>
+	<li><a href="http://directory.apache.org/apacheds/1.5/apacheds-v15-advanced-users-guide.html" title="ApacheDS v1.5 Advanced User's Guide">Advanced User's Guide</a></li>
+	<li><a href="http://directory.apache.org/apacheds/1.5/apacheds-v15-developers-guide.html" title="ApacheDS v1.5 Developer's Guide">Developer's Guide</a></li>
+	<li><a href="http://directory.apache.org/apacheds/gen-docs/1.5.5" rel="nofollow">Generated Reports (e.g. JavaDocs)</a></li>
+</ul>
+
+
+<h5><a name="Navigation-ApacheDS1.0(old)"></a>ApacheDS 1.0 (old)</h5>
+
+<ul>
+	<li><a href="http://directory.apache.org/apacheds/1.0/" rel="nofollow">Home</a></li>
+</ul>
+
+
+<h5><a name="Navigation-AboutApache"></a>About Apache</h5>
+<ul>
+	<li><a href="http://www.apache.org/" rel="nofollow">Apache</a></li>
+	<li><a href="http://www.apache.org/foundation/sponsorship.html" rel="nofollow">Sponsorship</a></li>
+	<li><a href="http://apache.org/foundation/thanks.html" rel="nofollow">Thanks</a></li>
+</ul> </div><!-- navigation -->
+                </div><!-- leftColumn -->
+                <div id="rightColumn">
+                    <style type="text/css">/*<![CDATA[*/
+table.ScrollbarTable  {border: none;padding: 3px;width: 100%;padding: 3px;margin: 0px;background-color: #f0f0f0}
+table.ScrollbarTable td.ScrollbarPrevIcon {text-align: center;width: 16px;border: none;}
+table.ScrollbarTable td.ScrollbarPrevName {text-align: left;border: none;}
+table.ScrollbarTable td.ScrollbarParent {text-align: center;border: none;}
+table.ScrollbarTable td.ScrollbarNextName {text-align: right;border: none;}
+table.ScrollbarTable td.ScrollbarNextIcon {text-align: center;width: 16px;border: none;}
+
+/*]]>*/</style><div class="Scrollbar"><table class="ScrollbarTable"><tbody><tr><td class="ScrollbarPrevName" width="33%">&nbsp;</td><td class="ScrollbarParent" width="33%"><sup><a href="http://directory.apache.org/apacheds/1.5/4-embedding-apacheds.html"><img src="41-embedding-apacheds-into-an-application_fichiers/up_16.gif" align="middle" border="0" width="8" height="8"></a></sup><a href="http://directory.apache.org/apacheds/1.5/4-embedding-apacheds.html">4. Embedding ApacheDS</a></td><td class="ScrollbarNextName" width="33%">&nbsp;<a href="http://directory.apache.org/apacheds/1.5/42-using-apacheds-for-unit-tests.html">4.2. Using ApacheDS for unit tests</a></td><td class="ScrollbarNextIcon"><a href="http://directory.apache.org/apacheds/1.5/42-using-apacheds-for-unit-tests.html"><img src="41-embedding-apacheds-into-an-application_fichiers/forwd_16.gif" align="middle" border="0" width="16" height="16"></a></td></tr></tbody></table></div>
+
+<h1><a name="4.1.EmbeddingApacheDSintoanapplication-EmbeddingApacheDirectoryServerintoanapplication"></a>Embedding Apache Directory Server into an application</h1>
+
+<div class="panelMacro"><table class="tipMacro"><colgroup><col width="24"><col></colgroup><tbody><tr><td valign="top"><img src="41-embedding-apacheds-into-an-application_fichiers/check.gif" alt="" align="absmiddle" border="0" width="16" height="16"></td><td><b>ApacheDS 1.5.5</b><br>This site was updated for ApacheDS 1.5.5.</td></tr></tbody></table></div>
+
+<p>The idea is to use the server directly without having to communicate
+with a remote server, eliminating all the network layer. This is one of
+the reason ADS has been developed in Java: to allow such usage.</p>
+
+<p>We will go through a very simple example step by step to show you how this can be done.</p>
+
+
+<h2><a name="4.1.EmbeddingApacheDSintoanapplication-Settinguptheenvironment"></a>Setting up the environment</h2>
+
+<p>We first need to define a base for our project. We use Maven (2.0.9
+or above) to build our project, so the structure we will use looks like
+this:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">.
+|-- pom.xml
+`-- src
+    `-- main
+        `-- java
+            `-- org
+                `-- apache
+                    `-- directory
+                        `-- EmbeddedADS.java
+</pre>
+</div></div>
+
+<p>You could download both files here:<br>
+<a href="http://directory.apache.org/apacheds/1.5/41-embedding-apacheds-into-an-application.data/EmbeddedADS.java">EmbeddedADS.java</a><br>
+<a href="http://directory.apache.org/apacheds/1.5/41-embedding-apacheds-into-an-application.data/pom.xml">pom.xml</a></p>
+
+<div class="panelMacro"><table class="noteMacro"><colgroup><col width="24"><col></colgroup><tbody><tr><td valign="top"><img src="41-embedding-apacheds-into-an-application_fichiers/warning.gif" alt="" align="absmiddle" border="0" width="16" height="16"></td><td>If
+you don't want to use Maven you need to add the following dependencies
+to your classpath in order to compile and run this sample.<br>
+* apacheds-all-1.5.5.jar<br>
+* slf4j-api-1.5.6.jar<br>
+* slf4j-log4j12-1.5.6.jar<br>
+* log4j-1.2.14.jar</td></tr></tbody></table></div>
+
+
+<h2><a name="4.1.EmbeddingApacheDSintoanapplication-Creatingtheapplication"></a>Creating the application</h2>
+
+<p>So let's start with the code. It's quite simple: we define a class,
+add a main() method, and initialize the server, before using it. In the
+code snippet below, we have removed all the initialization part to keep
+only the main() method.</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"><span class="code-keyword">package</span> org.apache.directory;
+
+/**
+ * A simple example exposing how to embed Apache Directory Server
+ * into an application.
+ *
+ * @author &lt;a href=<span class="code-quote">"mailto:dev@directory.apache.org"</span>&gt;Apache Directory Project&lt;/a&gt;
+ * @version $Rev$, $Date$
+ */
+<span class="code-keyword">public</span> class EmbeddedADS
+{
+    /** The directory service */
+    <span class="code-keyword">private</span> DirectoryService service;
+
+    ...
+
+    /**
+     * Creates a <span class="code-keyword">new</span> instance of EmbeddedADS. It initializes the directory service.
+     *
+     * @<span class="code-keyword">throws</span> Exception If something went wrong
+     */
+    <span class="code-keyword">public</span> EmbeddedADS() <span class="code-keyword">throws</span> Exception
+    {
+        init();
+    }
+
+    /**
+     * Main class. We just <span class="code-keyword">do</span> a lookup on the server to check that it's available.
+     *
+     * @param args Not used. 
+     */
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> void main( <span class="code-object">String</span>[] args ) <span class="code-comment">//<span class="code-keyword">throws</span> Exception 
+</span>    {
+        <span class="code-keyword">try</span>
+        {
+            <span class="code-comment">// Create the server
+</span>            EmbeddedADS ads = <span class="code-keyword">new</span> EmbeddedADS();
+            
+            <span class="code-comment">// Read an entry
+</span>            Entry result = ads.service.getAdminSession().lookup( <span class="code-keyword">new</span> LdapDN( <span class="code-quote">"dc=apache,dc=org"</span> ) );
+            
+            <span class="code-comment">// And print it <span class="code-keyword">if</span> available
+</span>            <span class="code-object">System</span>.out.println( <span class="code-quote">"Found entry : "</span> + result );
+        }
+        <span class="code-keyword">catch</span> ( Exception e )
+        {
+            <span class="code-comment">// Ok, we have something wrong going on ...
+</span>            e.printStackTrace();
+        }
+    }
+}
+
+</pre>
+</div></div>
+
+<p>As you can see, we first initialize the server, and immediately do a lookup to check that we can read an entry from it.</p>
+
+<p>Let's focus on the initialization part now.</p>
+
+
+<h2><a name="4.1.EmbeddingApacheDSintoanapplication-Initializingtheserver"></a>Initializing the server</h2>
+
+<p>This is done in the <b>init()</b> method. It will create the DirectoryService global object (<b>service</b>), and create a partition in which we will store the entries. </p>
+
+<div class="panelMacro"><table class="noteMacro"><colgroup><col width="24"><col></colgroup><tbody><tr><td valign="top"><img src="41-embedding-apacheds-into-an-application_fichiers/warning.gif" alt="" align="absmiddle" border="0" width="16" height="16"></td><td>A partition is a storage point, associated with a DN, root point for this partition. It's a bit like a mounting point on Unix.<br>
+We also need a context entry associated to this DN.</td></tr></tbody></table></div>
+
+<p>Here, we will create the <b>apache</b> partition, associated with the 'dc=apache,dc=org' DN.</p>
+
+<p>Here is the code for this method :</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">    ...
+
+    /**
+     * Initialize the server. It creates the partition, adds the index, and
+     * injects the context entries <span class="code-keyword">for</span> the created partitions.
+     *
+     * @<span class="code-keyword">throws</span> Exception <span class="code-keyword">if</span> there were some problems <span class="code-keyword">while</span> initializing the system
+     */
+    <span class="code-keyword">private</span> void init() <span class="code-keyword">throws</span> Exception
+    {
+        <span class="code-comment">// Initialize the LDAP service
+</span>        service = <span class="code-keyword">new</span> DefaultDirectoryService();
+        
+        <span class="code-comment">// Disable the ChangeLog system
+</span>        service.getChangeLog().setEnabled( <span class="code-keyword">false</span> );
+
+        <span class="code-comment">// Create a <span class="code-keyword">new</span> partition named 'apache'.
+</span>        Partition apachePartition = addPartition( <span class="code-quote">"apache"</span>, <span class="code-quote">"dc=apache,dc=org"</span> );
+        
+        <span class="code-comment">// Index some attributes on the apache partition
+</span>        addIndex( apachePartition, <span class="code-quote">"objectClass"</span>, <span class="code-quote">"ou"</span>, <span class="code-quote">"uid"</span> );
+        
+        <span class="code-comment">// And start the service
+</span>        service.startup();
+        
+        <span class="code-comment">// Inject the apache root entry <span class="code-keyword">if</span> it does not already exist
+</span>        <span class="code-keyword">if</span> ( !service.getAdminSession().exists( apachePartition.getSuffixDn() ) )
+        {
+            LdapDN dnApache = <span class="code-keyword">new</span> LdapDN( <span class="code-quote">"dc=Apache,dc=Org"</span> );
+            ServerEntry entryApache = service.newEntry( dnApache );
+            entryApache.add( <span class="code-quote">"objectClass"</span>, <span class="code-quote">"top"</span>, <span class="code-quote">"domain"</span>, <span class="code-quote">"extensibleObject"</span> );
+            entryApache.add( <span class="code-quote">"dc"</span>, <span class="code-quote">"Apache"</span> );
+            service.getAdminSession().add( entryApache );
+        }
+        
+        <span class="code-comment">// We are all done !
+</span>    }
+
+    ...
+</pre>
+</div></div>
+
+<p>We disabled the <b>ChangeLog</b> service because it's useless in our case. As you can see, the steps to initialize the server are:</p>
+<ul class="alternate" type="square">
+	<li>create a new DirectoryService instance</li>
+	<li>add a partition</li>
+	<li>add some index</li>
+	<li>start the service</li>
+	<li>add the context entry</li>
+</ul>
+
+
+<p>One important point: as the data are remanent, we have to check that
+the added context entry does not exist already before adding it.</p>
+
+<p>Some helper methods have been used : <b>addPartition</b> and <b>addIndex</b>. Here they are :</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">    ...
+
+    /**
+     * Add a <span class="code-keyword">new</span> partition to the server
+     *
+     * @param partitionId The partition Id
+     * @param partitionDn The partition DN
+     * @<span class="code-keyword">return</span> The newly added partition
+     * @<span class="code-keyword">throws</span> Exception If the partition can't be added
+     */
+    <span class="code-keyword">private</span> Partition addPartition( <span class="code-object">String</span> partitionId, <span class="code-object">String</span> partitionDn ) <span class="code-keyword">throws</span> Exception
+    {
+        <span class="code-comment">// Create a <span class="code-keyword">new</span> partition named 'foo'.
+</span>        Partition partition = <span class="code-keyword">new</span> JdbmPartition();
+        partition.setId( partitionId );
+        partition.setSuffix( partitionDn );
+        service.addPartition( partition );
+        
+        <span class="code-keyword">return</span> partition;
+    }
+    
+    
+    /**
+     * Add a <span class="code-keyword">new</span> set of index on the given attributes
+     *
+     * @param partition The partition on which we want to add index
+     * @param attrs The list of attributes to index
+     */
+    <span class="code-keyword">private</span> void addIndex( Partition partition, <span class="code-object">String</span>... attrs )
+    {
+        <span class="code-comment">// Index some attributes on the apache partition
+</span>        HashSet&lt;Index&lt;?, ServerEntry&gt;&gt; indexedAttributes = <span class="code-keyword">new</span> HashSet&lt;Index&lt;?, ServerEntry&gt;&gt;();
+        
+        <span class="code-keyword">for</span> ( <span class="code-object">String</span> attribute:attrs )
+        {
+            indexedAttributes.add( <span class="code-keyword">new</span> JdbmIndex&lt;<span class="code-object">String</span>,ServerEntry&gt;( attribute ) );
+        }
+        
+        ((JdbmPartition)partition).setIndexedAttributes( indexedAttributes );
+    }
+
+    ...
+</pre>
+</div></div>
+
+<p>That's it! (the attached code will contain the needed imports)</p>
+
+
+<h2><a name="4.1.EmbeddingApacheDSintoanapplication-Buildingthesample"></a>Building the sample</h2>
+
+<p>Using Maven this is easy:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">$ mvn clean compile
+[INFO] Scanning <span class="code-keyword">for</span> projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building ApacheDS embedded sample
+[INFO]    task-segment: [clean, compile]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean {execution: <span class="code-keyword">default</span>-clean}]
+[INFO] Deleting directory /tmp/EmbeddedADS/target
+[INFO] [resources:resources {execution: <span class="code-keyword">default</span>-resources}]
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/EmbeddedADS/src/main/resources
+[INFO] [compiler:compile {execution: <span class="code-keyword">default</span>-compile}]
+[INFO] Compiling 1 source file to /tmp/EmbeddedADS/target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2 seconds
+[INFO] Finished at: Sat Nov 28 20:02:23 CET 2009
+[INFO] Final Memory: 17M/76M
+[INFO] ------------------------------------------------------------------------
+</pre>
+</div></div>
+
+<p>The resulting jar can be found in the <b>target</b> directory. </p>
+
+
+<h2><a name="4.1.EmbeddingApacheDSintoanapplication-Runningthesample"></a>Running the sample</h2>
+
+<p>Using Maven this is easy:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">$ mvn exec:java -Dexec.mainClass=org.apache.directory.EmbeddedADS
+[INFO] Scanning <span class="code-keyword">for</span> projects...
+[INFO] Searching repository <span class="code-keyword">for</span> plugin with prefix: 'exec'.
+[INFO] ------------------------------------------------------------------------
+[INFO] Building ApacheDS embedded sample
+[INFO]    task-segment: [exec:java]
+[INFO] ------------------------------------------------------------------------
+[INFO] Preparing exec:java
+[INFO] No goals needed <span class="code-keyword">for</span> project - skipping
+[INFO] [exec:java {execution: <span class="code-keyword">default</span>-cli}]
+</pre>
+</div></div>
+
+<p>When the main method is run, you should obtain something like :</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">log4j:WARN No appenders could be found <span class="code-keyword">for</span> logger (org.apache.directory.server.schema.registries.DefaultNormalizerRegistry).
+log4j:WARN Please initialize the log4j system properly.
+Found entry : ServerEntry
+    dn[n]: dc=Apache,dc=Org
+    objectClass: extensibleObject
+    objectClass: domain
+    objectClass: top
+    dc: Apache
+</pre>
+</div></div>
+
+<p>That's it!</p>
+                </div><!-- rightColumn -->
+                <div id="endContent"></div>
+            </div><!-- content -->
+            <div id="footer">© 2003-2009, <a href="http://www.apache.org/">The Apache Software Foundation</a>&nbsp;-&nbsp;<a href="http://directory.apache.org/privacy-policy.html">Privacy Policy</a></div>
+        </div><!-- container -->
+    </body></html>
