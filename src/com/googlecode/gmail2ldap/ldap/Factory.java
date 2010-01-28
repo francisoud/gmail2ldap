@@ -13,6 +13,7 @@ public class Factory {
 	public static DirectoryService getDirectoryService() {
 		// Initialize the LDAP service
 		final DirectoryService service = new DefaultDirectoryService();
+		directoryService.setShutdownHookEnabled( true );
 
 		// Disable the ChangeLog system
 		service.getChangeLog().setEnabled(false);
@@ -39,6 +40,7 @@ public class Factory {
 		final LdapServer ldapServer = new LdapServer();
 		ldapServer.setDirectoryService(getDirectoryService());
 		ldapServer.setTransports(new TcpTransport(389));
+		ldapServer.setAllowAnonymousAccess( true );
 		return ldapServer;
 	}
 }
