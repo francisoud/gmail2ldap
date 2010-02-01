@@ -1,33 +1,49 @@
 package com.googlecode.gmail2ldap.ldap;
 
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.directory.server.core.CoreSession;
 import org.apache.directory.server.core.DirectoryService;
+import org.apache.directory.server.core.entry.ClonedServerEntry;
 import org.apache.directory.server.core.entry.ServerEntry;
+import org.apache.directory.server.core.filtering.EntryFilteringCursor;
 import org.apache.directory.server.core.partition.Partition;
 import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gdata.data.contacts.ContactEntry;
-import com.google.gdata.data.extensions.Email;
-import com.google.gdata.data.extensions.PhoneNumber;
 import com.googlecode.gmail2ldap.model.User;
 
 public class Loader {
 
+	private static final String TX_ERROR_MSG = "Start a Transaction first !";
+
 	private static final String ROOT_DN = "dc=gmail2ldap,dc=googlecode,dc=com";
+
+	private final String username;
 
 	private Partition partition;
 
 	private final DirectoryService service;
 
+	private final String dnUsers;
+
+	private final String dnGroups;
+
+	private final String dnUsername;
+
+	private String dnTmp;
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public Loader(final DirectoryService service, final String partitionId) {
+	public Loader(final DirectoryService service, final String username) {
 		this.service = service;
+		this.username = username;
+		dnUsername = "ou=" + username + ",o=gmail," + ROOT_DN;
+		dnUsers = "ou=Users," + dnUsername;
+		dnGroups = "ou=Groups," + dnUsername;
 		final Set<? extends Partition> partitions = service.getPartitions();
 		for (final Partition tmp : partitions) {
 			if (Constants.PARTITION_ID.equals(tmp.getId())) {
@@ -43,20 +59,19 @@ public class Loader {
 	/**
 	 * Inject the gmail2ldap root entry.
 	 */
-	public void createRoot(final String username) {
+	public void createRoot() {
 		try {
 			final LdapDN dnUsername = new LdapDN("ou=" + username + ",o=gmail," + ROOT_DN);
-			// if (!service.getAdminSession().exists(partition.getSuffixDn())) {
 			if (!service.getAdminSession().exists(dnUsername)) {
 				logger.debug("No root dn found, adding root entries...");
-				addRootEntries(username);
+				addRootEntries();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void addRootEntries(final String username) {
+	private void addRootEntries() {
 		try {
 			final CoreSession adminSession = service.getAdminSession();
 
@@ -88,18 +103,18 @@ public class Loader {
 			}
 			// dn:
 			// ou=Users,ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final LdapDN dnUsers = new LdapDN("ou=Users,ou=" + username + ",o=gmail," + ROOT_DN);
-			if (!adminSession.exists(dnUsers)) {
-				final ServerEntry entryUsers = service.newEntry(dnUsers);
+			final LdapDN ldapDnUsers = new LdapDN(dnUsers);
+			if (!adminSession.exists(ldapDnUsers)) {
+				final ServerEntry entryUsers = service.newEntry(ldapDnUsers);
 				entryUsers.add("objectClass", "top", "organizationalUnit");
 				entryUsers.add("ou", "Users");
 				adminSession.add(entryUsers);
 			}
 			// dn:
 			// ou=Groups,ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final LdapDN dnGroups = new LdapDN("ou=Groups,ou=" + username + ",o=gmail," + ROOT_DN);
-			if (!adminSession.exists(dnGroups)) {
-				final ServerEntry entryGroups = service.newEntry(dnGroups);
+			final LdapDN ldapDnGroups = new LdapDN(dnGroups);
+			if (!adminSession.exists(ldapDnGroups)) {
+				final ServerEntry entryGroups = service.newEntry(ldapDnGroups);
 				entryGroups.add("objectClass", "top", "organizationalUnit");
 				entryGroups.add("ou", "Groups");
 				adminSession.add(entryGroups);
@@ -109,88 +124,102 @@ public class Loader {
 		}
 	}
 
-	public void addUser(final String username, final User user) {
+	public void addUser(final User user) {
+		if (dnTmp == null) {
+			throw new IllegalStateException(TX_ERROR_MSG);
+		}
 		final ServerEntry entryUser;
 		try {
 			// dn:
-			// uid=[userid],ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final String dn = "uid=" + user.getUid() + ",ou=Users,ou=" + username + ",o=gmail," + ROOT_DN;
+			// uid=[userid],ou=Users,ou=Tmp_123,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+			final String dn = "uid=" + user.getUid() + "," + dnTmp;
 			logger.debug(dn);
 			final LdapDN dnUser = new LdapDN(dn.replace('+', '_'));
-			// TODO do something when entry already exist (update)
-			if (!service.getAdminSession().exists(dnUser)) {
-				entryUser = service.newEntry(dnUser);
-				entryUser.add("objectClass", "top", "inetOrgPerson", "uidObject", "extensibleObject", "person",
-						"organizationalPerson");
+			entryUser = service.newEntry(dnUser);
+			entryUser.add("objectClass", "top", "inetOrgPerson", "uidObject", "extensibleObject", "person",
+					"organizationalPerson");
 
-				// uid: mplanck
-				entryUser.add("uid", user.getUid());
-				// cn: Max Planck
-				entryUser.add("cn", user.getFullName());
-				// givenname: Max
-				entryUser.add("givenname", user.getFirstName());
-				// sn: Planck
-				entryUser.add("sn", user.getLastName());
+			// uid: mplanck
+			entryUser.add("uid", user.getUid());
+			// cn: Max Planck
+			entryUser.add("cn", user.getFullName());
+			// givenname: Max
+			entryUser.add("givenname", user.getFirstName());
+			// sn: Planck
+			entryUser.add("sn", user.getLastName());
 
-				// mail: mplanck@example.com
-				entryUser.add("mail", user.getEmail());
+			// mail: mplanck@example.com
+			entryUser.add("mail", user.getEmail());
 
-				service.getAdminSession().add(entryUser);
-			} else {
-				logger.warn("TODO update dn:" + dn);
+			service.getAdminSession().add(entryUser);
+		} catch (Exception e) {
+			// TODO handle same uid exception
+			// FIXME go on as if nothing had append
+			// throw new RuntimeException(e);
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	public void createTmpNode() {
+		try {
+			final CoreSession adminSession = service.getAdminSession();
+
+			// dn:
+			// ou=Tmp_1234,ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+			final String tmp = "Tmp_" + UUID.randomUUID();
+			dnTmp = "ou=" + tmp + ",ou=" + username + ",o=gmail," + ROOT_DN;
+			final LdapDN ldapDnTmp = new LdapDN(dnTmp);
+			if (!adminSession.exists(ldapDnTmp)) {
+				final ServerEntry entryTmp = service.newEntry(ldapDnTmp);
+				entryTmp.add("objectClass", "top", "organizationalUnit");
+				entryTmp.add("ou", tmp);
+				adminSession.add(entryTmp);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void addUser(final ContactEntry entry) {
+	public void replaceUsersNode() {
+		if (dnTmp == null) {
+			throw new IllegalStateException(TX_ERROR_MSG);
+		}
 		try {
-			if (entry.getNickname() == null) {
-				logger.warn("Ignoring: " + entry.getId());
-				return;
-			}
-			logger.debug("Adding: " + entry.getId());
+			final CoreSession adminSession = service.getAdminSession();
 
-			// dn: uid=mplanck,ou=Users,dc=example,dc=com
-			// objectClass: organizationalPerson
-			// objectClass: person
-			// objectClass: extensibleObject
-			// objectClass: uidObject
-			// objectClass: inetOrgPerson
-			// objectClass: top
-			// cn: Max Planck
-			// facsimiletelephonenumber: +1 904 982 6883
-			// givenname: Max
-			// mail: mplanck@example.com
-			// ou: Users
-			// roomnumber: 666
-			// sn: Planck
-			// telephonenumber: +1 904 982 6882
-			// uid: mplanck
-			// userpassword:: c2VjcmV0
+			final LdapDN ldapDnUsers = new LdapDN(dnUsers);
+			final LdapDN ldapDnTmp = new LdapDN(dnTmp);
+			if (adminSession.exists(ldapDnUsers)) {
+				adminSession.delete(ldapDnUsers);
+				final boolean deleteOldRdn = true;
+				final Rdn newRdn = new Rdn("ou=Users");
+				adminSession.rename(ldapDnTmp, newRdn, deleteOldRdn);
+				// adminSession.moveAndRename(ldapDnTmp, new LdapDN(dnUsername),
+				// newRdn, deleteOldRdn);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-			// dn:
-			// uid=[userid],ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final String dn = entry.getNickname().getValue() + ",ou=Users,ou=benjamin.francisoud,o=gmail," + ROOT_DN;
-			final LdapDN dnUser = new LdapDN(dn);
-			final ServerEntry entryUser = service.newEntry(dnUser);
-			entryUser.add("objectClass", "top", "inetOrgPerson", "uidObject", "extensibleObject", "person",
-					"organizationalPerson");
-			// FIXME
-			entryUser.add("cn", entry.getShortName() + " " + entry.getName());
-			entryUser.add("givenname", entry.getShortName().getValue());
-			entryUser.add("sn", entry.getNickname().getValue());
-			entryUser.add("uid", entry.getNickname().getValue());
-			final List<Email> emailAddresses = entry.getEmailAddresses();
-			for (final Email email : emailAddresses) {
-				entryUser.add("mail", email.getAddress());
+	public void deleteTmpNode() {
+		if (dnTmp == null) {
+			throw new IllegalStateException(TX_ERROR_MSG);
+		}
+		try {
+			final CoreSession adminSession = service.getAdminSession();
+
+			final LdapDN ldapDnTmp = new LdapDN(dnTmp);
+			if (adminSession.exists(ldapDnTmp)) {
+				final String filter = "+(objectClass=person)";
+				final EntryFilteringCursor cursor = adminSession.search(ldapDnTmp, filter);
+				while (cursor.next()) {
+					ClonedServerEntry entry = cursor.get();
+					logger.debug("deleting: " + entry.getDn().toString());
+					adminSession.delete(entry.getDn());
+				}
+				adminSession.delete(ldapDnTmp);
 			}
-			final List<PhoneNumber> phoneNumbers = entry.getPhoneNumbers();
-			for (final PhoneNumber phoneNumber : phoneNumbers) {
-				entryUser.add("telephonenumber", phoneNumber.getPhoneNumber());
-			}
-			service.getAdminSession().add(entryUser);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
