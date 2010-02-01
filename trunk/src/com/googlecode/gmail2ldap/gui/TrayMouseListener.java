@@ -11,27 +11,27 @@ public class TrayMouseListener implements java.awt.event.MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent event) {
-		logger.debug("Tray Icon - Mouse clicked!");
+		// do nothing
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent event) {
-		logger.debug("Tray Icon - Mouse entered!");
+		// do nothing
 	}
 
 	@Override
 	public void mouseExited(MouseEvent event) {
-		logger.debug("Tray Icon - Mouse exited!");
+		// do nothing
 	}
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		logger.debug("Tray Icon - Mouse pressed!");
+		// do nothing
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
-		logger.debug("Tray Icon - Mouse released!");
+		// do nothing
 	}
 
 }

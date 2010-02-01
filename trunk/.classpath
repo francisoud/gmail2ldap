@@ -4,11 +4,6 @@
 	<classpathentry excluding="**/.svn/" kind="src" path="sandbox"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="var" path="Google Data Plugin">
-		<attributes>
-			<attribute name="plugin_id" value="com.google.gdata"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/apacheds/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/apacheds/apacheds-all-1.5.5.jar" sourcepath="D:/development/ldap/apacheds/svn/tags/1.5.5/protocol-ldap/src/main/java"/>
 	<classpathentry kind="lib" path="lib/apacheds/commons-collections-3.2.1.jar"/>

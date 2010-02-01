@@ -1,5 +1,7 @@
 package com.googlecode.gmail2ldap.gmail;
 
+import static com.google.gdata.client.ClientLoginAccountType.HOSTED;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -12,22 +14,20 @@ import com.google.gdata.data.contacts.ContactEntry;
 import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import com.googlecode.gmail2ldap.config.Account;
 
 public class Contacts {
 
-	private static final String APPLICATION_NAME = "gmail2ldap";
+	private static final String APPLICATION_NAME = "code.google.com-gmail2ldap-1.x";
 
-	private final String username;
-
-	private final String password;
+	private final Account account;
 
 	private ContactsService service;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public Contacts(final String username, final String password) {
-		this.username = username;
-		this.password = password;
+	public Contacts(final Account account) {
+		this.account = account;
 	}
 
 	/**
@@ -35,9 +35,17 @@ public class Contacts {
 	 */
 	public List<ContactEntry> list() {
 		try {
-			final URL metafeedUrl = new URL("http://www.google.com/m8/feeds/contacts/" + username + "@gmail.com/base");
+			String protocol = account.getProtocol();
+			// set default to http
+			if (protocol == null) {
+				protocol = "http";
+			}
+			final URL metafeedUrl = new URL(protocol + "://www.google.com/m8/feeds/contacts/" + account.getEmail()
+					+ "/full"); // base
 			logger.debug("Getting Contacts entries from " + metafeedUrl.toString());
 			final ContactFeed resultFeed = getService().getFeed(metafeedUrl, ContactFeed.class);
+			resultFeed.setItemsPerPage(100);
+			resultFeed.setTotalResults(100);
 			final List<ContactEntry> entries = resultFeed.getEntries();
 			return entries;
 		} catch (ServiceException e) {
@@ -47,12 +55,21 @@ public class Contacts {
 		}
 	}
 
+	public Account getAccount() {
+		return account;
+	}
+
 	private ContactsService getService() {
 		if (service == null) {
 			// Create a new Contacts service
-			service = new ContactsService(APPLICATION_NAME);
 			try {
-				service.setUserCredentials(username, password);
+				if (account.getDomain() == null) {
+					service = new ContactsService(APPLICATION_NAME);
+					service.setUserCredentials(account.getUsername(), account.getPassword());
+				} else {
+					service = new ContactsService(APPLICATION_NAME, account.getProtocol(), account.getDomain());
+					service.setUserCredentials(account.getEmail(), account.getPassword(), HOSTED);
+				}
 			} catch (AuthenticationException e) {
 				throw new RuntimeException(e);
 			}
