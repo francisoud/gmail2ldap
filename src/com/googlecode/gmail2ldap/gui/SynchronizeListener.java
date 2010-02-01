@@ -13,6 +13,7 @@ import com.google.gdata.data.contacts.ContactEntry;
 import com.google.gdata.data.extensions.Email;
 import com.googlecode.gmail2ldap.gmail.Contacts;
 import com.googlecode.gmail2ldap.ldap.Loader;
+import com.googlecode.gmail2ldap.ldap.Transaction;
 import com.googlecode.gmail2ldap.model.User;
 
 public class SynchronizeListener implements ActionListener {
@@ -31,36 +32,39 @@ public class SynchronizeListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		logger.info("Synchronizing...");
-		final List<ContactEntry> entries = contacts.list();
-		for (final ContactEntry entry : entries) {
-			// logger.debug(ToStringBuilder.reflectionToString(entry,
-			// ToStringStyle.MULTI_LINE_STYLE));
-
-			final List<Email> emails = entry.getEmailAddresses();
-			if (emails.size() > 0) {
-				final User user = new User();
-				for (final Email email : emails) {
-					// logger.debug(ToStringBuilder.reflectionToString(email,
-					// ToStringStyle.MULTI_LINE_STYLE));
-					user.setEmail(email.getAddress());
-					// user.setNickName(email.getDisplayName());
-					break; // only keep first email
-				}
-				if (entry.getNickname() != null) {
-					user.setNickName(entry.getNickname().getValue());
-				}
-				if (entry.getName() != null) {
-					if (entry.getName().getGivenName() != null) {
-						user.setFirstName(entry.getName().getGivenName().getValue());
+		final Transaction transaction = new Transaction(loader);
+		try {
+			transaction.begin();
+			final List<ContactEntry> entries = contacts.list();
+			for (final ContactEntry entry : entries) {
+				final List<Email> emails = entry.getEmailAddresses();
+				if (emails.size() > 0) {
+					final User user = new User();
+					for (final Email email : emails) {
+						user.setEmail(email.getAddress());
+						// user.setNickName(email.getDisplayName());
+						break; // only keep first email
 					}
-					if (entry.getName().getFamilyName() != null) {
-						user.setLastName(entry.getName().getFamilyName().getValue());
+					if (entry.getNickname() != null) {
+						user.setNickName(entry.getNickname().getValue());
 					}
+					if (entry.getName() != null) {
+						if (entry.getName().getGivenName() != null) {
+							user.setFirstName(entry.getName().getGivenName().getValue());
+						}
+						if (entry.getName().getFamilyName() != null) {
+							user.setLastName(entry.getName().getFamilyName().getValue());
+						}
+					}
+					logger.debug(ToStringBuilder.reflectionToString(user, ToStringStyle.MULTI_LINE_STYLE));
+					loader.addUser(user);
 				}
-				logger.debug(ToStringBuilder.reflectionToString(user, ToStringStyle.MULTI_LINE_STYLE));
-				loader.addUser(contacts.getAccount().getUsername(), user);
 			}
+			logger.info("Total Entries: " + entries.size());
+			transaction.commit();
+		} catch (Exception e) {
+			logger.error("Rollback changes: " + e.getMessage(), e);
+			transaction.rollback();
 		}
-		logger.info("Total Entries: " + entries.size());
 	}
 }

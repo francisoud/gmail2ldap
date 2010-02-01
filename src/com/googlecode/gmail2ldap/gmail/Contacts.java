@@ -20,6 +20,9 @@ public class Contacts {
 
 	private static final String APP_NAME_SUFFIX = "-gmail2ldap.code.google.com-1.x";
 
+	// TODO make it configurable
+	private static final int MAX_RESULTS = 10;
+
 	private final Account account;
 
 	private ContactsService service;
@@ -41,15 +44,15 @@ public class Contacts {
 			} else {
 				protocol = "http";
 			}
-			// TODO make it configurable
-			final int maxResults = 10000;
-			final String url = protocol + "://www.google.com/m8/feeds/contacts/" + account.getEmail()
-					+ "/full?max-results=" + maxResults; // base
+			final StringBuilder sb = new StringBuilder(protocol);
+			sb.append("://www.google.com/m8/feeds/contacts/");
+			sb.append(account.getEmail());
+			sb.append("/full?max-results="); // base
+			sb.append(MAX_RESULTS);
+			final String url = sb.toString();
 			final URL metafeedUrl = new URL(url);
 			logger.debug("Getting Contacts entries from " + metafeedUrl.toString());
 			final ContactFeed resultFeed = getService().getFeed(metafeedUrl, ContactFeed.class);
-			// resultFeed.setItemsPerPage(100);
-			// resultFeed.setTotalResults(100);
 			final List<ContactEntry> entries = resultFeed.getEntries();
 			return entries;
 		} catch (ServiceException e) {

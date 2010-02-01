@@ -11,4 +11,5 @@
 * created CHANGELOG and ROADMAP files
 * User accounts informations externalize in xml file (accounts.xml)
 * Handle multiple accounts
+* Handle google apps email type
 
