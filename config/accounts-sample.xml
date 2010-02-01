@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE catalogs [
+<!DOCTYPE accounts [
   <!ELEMENT accounts     (account*)>
-  <!ATTLIST account      username CDATA #REQUIRED>
+  <!ATTLIST account      username ID #REQUIRED>
   <!ATTLIST account      email CDATA #REQUIRED>
   <!ATTLIST account      password CDATA #REQUIRED>
+  <!ATTLIST account      protocol (http|https) #IMPLIED>
+  <!ATTLIST account      domain CDATA #IMPLIED>
 ]>
 <accounts>
+	<!-- gmail classical account -->
 	<account username="REPLACE_WITH_YOUR_USERNAME" email="REPLACE_WITH_YOUR_EMAIL@gmail.com" password="REPLACE_WITH_YOUR_PASSWORD"/>
+
+	<!-- http://www.google.com/apps account -->
+	<account username="REPLACE_WITH_YOUR_USERNAME2" email="REPLACE_WITH_YOUR_EMAIL@COMPANY.com" password="REPLACE_WITH_YOUR_PASSWORD" 
+		protocol="https" domain="COMPANY.com"/>
+
 	<!--  add as much account as you want... -->
 </accounts>

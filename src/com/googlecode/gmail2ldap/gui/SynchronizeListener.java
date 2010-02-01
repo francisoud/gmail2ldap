@@ -58,7 +58,7 @@ public class SynchronizeListener implements ActionListener {
 					}
 				}
 				logger.debug(ToStringBuilder.reflectionToString(user, ToStringStyle.MULTI_LINE_STYLE));
-				loader.addUser(user);
+				loader.addUser(contacts.getAccount().getUsername(), user);
 			}
 		}
 		logger.info("Total Entries: " + entries.size());

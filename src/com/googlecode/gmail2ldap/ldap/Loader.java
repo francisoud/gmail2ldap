@@ -86,7 +86,7 @@ public class Loader {
 			}
 			// dn:
 			// ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final LdapDN dnUsers = new LdapDN("ou=Users,ou=benjamin.francisoud,o=gmail," + ROOT_DN);
+			final LdapDN dnUsers = new LdapDN("ou=Users,ou=" + username + ",o=gmail," + ROOT_DN);
 			if (!adminSession.exists(dnUsers)) {
 				final ServerEntry entryUsers = service.newEntry(dnUsers);
 				entryUsers.add("objectClass", "top", "organizationalUnit");
@@ -95,7 +95,7 @@ public class Loader {
 			}
 			// dn:
 			// ou=Groups,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final LdapDN dnGroups = new LdapDN("ou=Groups,ou=benjamin.francisoud,o=gmail," + ROOT_DN);
+			final LdapDN dnGroups = new LdapDN("ou=Groups,ou=" + username + ",o=gmail," + ROOT_DN);
 			if (!adminSession.exists(dnGroups)) {
 				final ServerEntry entryGroups = service.newEntry(dnGroups);
 				entryGroups.add("objectClass", "top", "organizationalUnit");
@@ -107,12 +107,12 @@ public class Loader {
 		}
 	}
 
-	public void addUser(final User user) {
+	public void addUser(final String username, final User user) {
 		final ServerEntry entryUser;
 		try {
 			// dn:
 			// uid=[userid],ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final String dn = "uid=" + user.getUid() + ",ou=Users,ou=benjamin.francisoud,o=gmail," + ROOT_DN;
+			final String dn = "uid=" + user.getUid() + ",ou=Users,ou=" + username + ",o=gmail," + ROOT_DN;
 			final LdapDN dnUser = new LdapDN(dn);
 			// TODO do something when entry already exist (update)
 			if (!service.getAdminSession().exists(dnUser)) {
