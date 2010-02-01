@@ -1,49 +1,62 @@
 package com.googlecode.gmail2ldap;
 
+import java.awt.MenuItem;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.server.core.DirectoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.gdata.data.contacts.ContactEntry;
+import com.googlecode.gmail2ldap.config.Account;
+import com.googlecode.gmail2ldap.config.Config;
 import com.googlecode.gmail2ldap.gmail.Contacts;
+import com.googlecode.gmail2ldap.gui.ProjectSystemTray;
+import com.googlecode.gmail2ldap.gui.SynchronizeListener;
 import com.googlecode.gmail2ldap.ldap.Constants;
 import com.googlecode.gmail2ldap.ldap.Loader;
 import com.googlecode.gmail2ldap.ldap.Server;
 
 public class Main {
 
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
 	public static void main(String[] args) {
-		if (args.length != 2) {
-			System.err.println("Usage: username password");
+		final Config config = new Config();
+		final FileInputStream input;
+		try {
+			input = new FileInputStream("config/accounts.xml");
+		} catch (FileNotFoundException e) {
+			System.err.println("Go to the 'config' dir and rename accounts-sample.xml to accounts.xml.");
+			System.err.println("Edit accounts.xml with your own email/password.");
 			System.exit(-1);
+			return;
 		}
-		final String username = args[0];
-		final String password = args[1];
+		final List<Account> accounts = config.parse(input);
+		final List<MenuItem> synchronizeItems = new ArrayList<MenuItem>();
 
-		// TODO make this configurable (system property)
-		// delete previous ldap store
-		// final String tmpDir = System.getProperty("java.io.tmpdir") + "/" +
-		// Constants.PARTITION_ID;
-		// final File workingDir = (File) new File(tmpDir);
-		// workingDir.delete();
-
-		Server server = new Server();
+		final Server server = new Server();
 		server.start();
 
 		final DirectoryService service = server.getLdapServer().getDirectoryService();
 		final Loader loader = new Loader(service, Constants.PARTITION_ID);
-		loader.createRoot(username);
+		final ProjectSystemTray systemTray = new ProjectSystemTray();
 
-		ProjectSystemTray systemTray = new ProjectSystemTray();
+		for (final Account account : accounts) {
+			logger.info(account.getUsername() + " " + account.getEmail() + " " + account.getPassword());
+			loader.createRoot(account.getUsername());
 
-		final Contacts contacts = new Contacts(username, password);
-		final List<ContactEntry> entries = contacts.list();
-		for (int i = 0; i < entries.size(); i++) {
-			final ContactEntry entry = entries.get(i);
-			System.out.println("\t" + entry.getTitle().getPlainText());
-			loader.addUser(entry);
+			final Contacts contacts = new Contacts(account.getUsername(), account.getPassword());
+			final ActionListener synchronizeListener = new SynchronizeListener(contacts, loader);
+
+			final MenuItem synchronizeItem = new MenuItem(account.getEmail());
+			synchronizeItem.addActionListener(synchronizeListener);
+			synchronizeItems.add(synchronizeItem);
 		}
-		System.out.println("\nTotal Entries: " + entries.size());
-
+		systemTray.setSynchronizeItems(synchronizeItems);
+		systemTray.start();
 	}
 }

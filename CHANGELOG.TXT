@@ -1,0 +1,14 @@
+== version 1.0 ==
+* added embedded ldap server (apacheds)
+* created root structure of ldap at startup
+* use gdata api to call contacts web service
+* added system tray + synchronize button
+* using sl4j to log informations
+* make username/password configurable (program args)
+* created packaging script (ant)
+* added bat/sh startup scripts
+* update manifest file with version and product info during packaging
+* created CHANGELOG and ROADMAP files
+* User accounts informations externalize in xml file (accounts.xml)
+* Handle multiple accounts
+

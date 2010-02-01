@@ -1,0 +1,9 @@
+Add splash screen at startup: (-splash:gdata-contacts-icon.png)
+Handle google app email type
+Externilize apacheds in external xml file (config.xml) especially allow anonymous + user/password of admin session (security reason)
+Create installation doc
+Create setup doc
+Create thundrbird documentation
+Use winamp like installer to add shortcut to desktop
+Close dos windows after program startup
+Use quartz to schedule synchronize

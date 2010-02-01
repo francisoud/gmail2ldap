@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalogs [
+  <!ELEMENT accounts     (account*)>
+  <!ATTLIST account      username CDATA #REQUIRED>
+  <!ATTLIST account      email CDATA #REQUIRED>
+  <!ATTLIST account      password CDATA #REQUIRED>
+]>
+<accounts>
+	<account username="REPLACE_WITH_YOUR_USERNAME" email="REPLACE_WITH_YOUR_EMAIL@gmail.com" password="REPLACE_WITH_YOUR_PASSWORD"/>
+	<!--  add as much account as you want... -->
+</accounts>

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="sandbox"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="Google Data Plugin">
 		<attributes>
@@ -22,5 +23,8 @@
 	<classpathentry kind="lib" path="lib/google/deps/google-collect-1.0-rc1.jar"/>
 	<classpathentry kind="lib" path="lib/google/gdata-contacts-meta-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/google/gdata-contacts-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
