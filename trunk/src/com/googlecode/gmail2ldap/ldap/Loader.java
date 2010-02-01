@@ -123,17 +123,11 @@ public class Loader {
 				// uid: mplanck
 				entryUser.add("uid", user.getUid());
 				// cn: Max Planck
-				if (user.getFullName() != null) {
-					entryUser.add("cn", user.getFullName());
-				}
+				entryUser.add("cn", user.getFullName());
 				// givenname: Max
-				if (user.getFirstName() != null) {
-					entryUser.add("givenname", user.getFirstName());
-				}
+				entryUser.add("givenname", user.getFirstName());
 				// sn: Planck
-				if (user.getLastName() != null) {
-					entryUser.add("sn", user.getLastName());
-				}
+				entryUser.add("sn", user.getLastName());
 
 				// mail: mplanck@example.com
 				entryUser.add("mail", user.getEmail());
