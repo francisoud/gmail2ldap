@@ -3,8 +3,6 @@ package com.googlecode.gmail2ldap.ldap;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.server.core.CoreSession;
 import org.apache.directory.server.core.DirectoryService;
 import org.apache.directory.server.core.entry.ServerEntry;
@@ -116,27 +114,34 @@ public class Loader {
 			// uid=[userid],ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
 			final String dn = "uid=" + user.getUid() + ",ou=Users,ou=benjamin.francisoud,o=gmail," + ROOT_DN;
 			final LdapDN dnUser = new LdapDN(dn);
-			entryUser = service.newEntry(dnUser);
-			entryUser.add("objectClass", "top", "inetOrgPerson", "uidObject", "extensibleObject", "person",
-					"organizationalPerson");
+			// TODO do something when entry already exist (update)
+			if (!service.getAdminSession().exists(dnUser)) {
+				entryUser = service.newEntry(dnUser);
+				entryUser.add("objectClass", "top", "inetOrgPerson", "uidObject", "extensibleObject", "person",
+						"organizationalPerson");
 
-			// uid: mplanck
-			entryUser.add("uid", user.getUid());
-			// cn: Max Planck
-			entryUser.add("cn", user.getFullName());
-			// givenname: Max
-			entryUser.add("givenname", user.getFirstName());
-			// sn: Planck
-			entryUser.add("sn", user.getLastName());
+				// uid: mplanck
+				entryUser.add("uid", user.getUid());
+				// cn: Max Planck
+				if (user.getFullName() != null) {
+					entryUser.add("cn", user.getFullName());
+				}
+				// givenname: Max
+				if (user.getFirstName() != null) {
+					entryUser.add("givenname", user.getFirstName());
+				}
+				// sn: Planck
+				if (user.getLastName() != null) {
+					entryUser.add("sn", user.getLastName());
+				}
 
-			// mail: mplanck@example.com
-			entryUser.add("mail", user.getEmail());
-		} catch (NamingException e) {
-			throw new RuntimeException(e);
-		}
+				// mail: mplanck@example.com
+				entryUser.add("mail", user.getEmail());
 
-		try {
-			service.getAdminSession().add(entryUser);
+				service.getAdminSession().add(entryUser);
+			} else {
+				logger.warn("TODO update dn:" + dn);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
