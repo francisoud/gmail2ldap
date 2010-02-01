@@ -18,7 +18,7 @@ import com.googlecode.gmail2ldap.config.Account;
 
 public class Contacts {
 
-	private static final String APPLICATION_NAME = "code.google.com-gmail2ldap-1.x";
+	private static final String APP_NAME_SUFFIX = "-gmail2ldap.code.google.com-1.x";
 
 	private final Account account;
 
@@ -41,8 +41,10 @@ public class Contacts {
 			} else {
 				protocol = "http";
 			}
+			// TODO make it configurable
+			final int maxResults = 10000;
 			final String url = protocol + "://www.google.com/m8/feeds/contacts/" + account.getEmail()
-					+ "/full?max-results=10000"; // base
+					+ "/full?max-results=" + maxResults; // base
 			final URL metafeedUrl = new URL(url);
 			logger.debug("Getting Contacts entries from " + metafeedUrl.toString());
 			final ContactFeed resultFeed = getService().getFeed(metafeedUrl, ContactFeed.class);
@@ -65,11 +67,12 @@ public class Contacts {
 		if (service == null) {
 			// Create a new Contacts service
 			try {
+				final String applicationName = account.getEmail() + APP_NAME_SUFFIX;
 				if (account.isHosted()) {
-					service = new ContactsService(APPLICATION_NAME, "https", "www.google.com");
+					service = new ContactsService(applicationName, "https", "www.google.com");
 					service.setUserCredentials(account.getEmail(), account.getPassword(), HOSTED);
 				} else {
-					service = new ContactsService(APPLICATION_NAME);
+					service = new ContactsService(applicationName);
 					service.setUserCredentials(account.getUsername(), account.getPassword());
 				}
 			} catch (AuthenticationException e) {
