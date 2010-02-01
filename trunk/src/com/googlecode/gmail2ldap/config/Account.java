@@ -8,9 +8,17 @@ public class Account {
 
 	private String password;
 
-	private String protocol;
+	private boolean isHosted = false;
 
-	private String domain;
+	public boolean isHosted() {
+		if (email == null) {
+			throw new IllegalStateException("Set email first to know if it's an hosted account");
+		}
+		if (email.indexOf("@gmail.com") == -1) {
+			isHosted = true;
+		}
+		return isHosted;
+	}
 
 	public String getUsername() {
 		return username;
@@ -34,21 +42,5 @@ public class Account {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getProtocol() {
-		return protocol;
-	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-
-	public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
 	}
 }

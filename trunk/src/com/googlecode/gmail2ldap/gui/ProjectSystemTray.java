@@ -60,9 +60,6 @@ public class ProjectSystemTray {
 			trayIcon.setImageAutoSize(true);
 			trayIcon.addActionListener(actionListener);
 
-			// final MouseListener mouseListener = new TrayMouseListener();
-			// trayIcon.addMouseListener(mouseListener);
-
 			try {
 				tray.add(trayIcon);
 			} catch (AWTException e) {

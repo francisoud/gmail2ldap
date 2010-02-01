@@ -35,17 +35,19 @@ public class Contacts {
 	 */
 	public List<ContactEntry> list() {
 		try {
-			String protocol = account.getProtocol();
-			// set default to http
-			if (protocol == null) {
+			final String protocol;
+			if (account.isHosted()) {
+				protocol = "https";
+			} else {
 				protocol = "http";
 			}
-			final URL metafeedUrl = new URL(protocol + "://www.google.com/m8/feeds/contacts/" + account.getEmail()
-					+ "/full"); // base
+			final String url = protocol + "://www.google.com/m8/feeds/contacts/" + account.getEmail()
+					+ "/full?max-results=10000"; // base
+			final URL metafeedUrl = new URL(url);
 			logger.debug("Getting Contacts entries from " + metafeedUrl.toString());
 			final ContactFeed resultFeed = getService().getFeed(metafeedUrl, ContactFeed.class);
-			resultFeed.setItemsPerPage(100);
-			resultFeed.setTotalResults(100);
+			// resultFeed.setItemsPerPage(100);
+			// resultFeed.setTotalResults(100);
 			final List<ContactEntry> entries = resultFeed.getEntries();
 			return entries;
 		} catch (ServiceException e) {
@@ -63,12 +65,12 @@ public class Contacts {
 		if (service == null) {
 			// Create a new Contacts service
 			try {
-				if (account.getDomain() == null) {
+				if (account.isHosted()) {
+					service = new ContactsService(APPLICATION_NAME, "https", "www.google.com");
+					service.setUserCredentials(account.getEmail(), account.getPassword(), HOSTED);
+				} else {
 					service = new ContactsService(APPLICATION_NAME);
 					service.setUserCredentials(account.getUsername(), account.getPassword());
-				} else {
-					service = new ContactsService(APPLICATION_NAME, account.getProtocol(), account.getDomain());
-					service.setUserCredentials(account.getEmail(), account.getPassword(), HOSTED);
 				}
 			} catch (AuthenticationException e) {
 				throw new RuntimeException(e);
