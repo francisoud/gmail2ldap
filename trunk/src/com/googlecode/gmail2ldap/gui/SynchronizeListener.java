@@ -33,20 +33,31 @@ public class SynchronizeListener implements ActionListener {
 		logger.info("Synchronizing...");
 		final List<ContactEntry> entries = contacts.list();
 		for (final ContactEntry entry : entries) {
-			logger.debug(ToStringBuilder.reflectionToString(entry, ToStringStyle.MULTI_LINE_STYLE));
+			// logger.debug(ToStringBuilder.reflectionToString(entry,
+			// ToStringStyle.MULTI_LINE_STYLE));
 
 			final List<Email> emails = entry.getEmailAddresses();
 			if (emails.size() > 0) {
 				final User user = new User();
 				for (final Email email : emails) {
-					logger.debug(ToStringBuilder.reflectionToString(email, ToStringStyle.MULTI_LINE_STYLE));
+					// logger.debug(ToStringBuilder.reflectionToString(email,
+					// ToStringStyle.MULTI_LINE_STYLE));
 					user.setEmail(email.getAddress());
 					// user.setNickName(email.getDisplayName());
 					break; // only keep first email
 				}
-				user.setNickName(entry.getNickname().getValue());
-				user.setFirstName(entry.getName().getGivenName().getValue());
-				user.setLastName(entry.getName().getFamilyName().getValue());
+				if (entry.getNickname() != null) {
+					user.setNickName(entry.getNickname().getValue());
+				}
+				if (entry.getName() != null) {
+					if (entry.getName().getGivenName() != null) {
+						user.setFirstName(entry.getName().getGivenName().getValue());
+					}
+					if (entry.getName().getFamilyName() != null) {
+						user.setLastName(entry.getName().getFamilyName().getValue());
+					}
+				}
+				logger.debug(ToStringBuilder.reflectionToString(user, ToStringStyle.MULTI_LINE_STYLE));
 				loader.addUser(user);
 			}
 		}
