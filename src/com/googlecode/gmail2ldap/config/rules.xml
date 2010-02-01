@@ -7,8 +7,6 @@
 		<bean-property-setter-rule pattern="username" />
 		<bean-property-setter-rule pattern="email" />
 		<bean-property-setter-rule pattern="password" />
-		<bean-property-setter-rule pattern="protocol" />
-		<bean-property-setter-rule pattern="domain" />
 		<set-next-rule methodname="add" paramtype="com.googlecode.gmail2ldap.config.Account" />
 	</pattern>
 </digester-rules>

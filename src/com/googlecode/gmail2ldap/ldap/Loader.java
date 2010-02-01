@@ -45,7 +45,9 @@ public class Loader {
 	 */
 	public void createRoot(final String username) {
 		try {
-			if (!service.getAdminSession().exists(partition.getSuffixDn())) {
+			final LdapDN dnUsername = new LdapDN("ou=" + username + ",o=gmail," + ROOT_DN);
+			// if (!service.getAdminSession().exists(partition.getSuffixDn())) {
+			if (!service.getAdminSession().exists(dnUsername)) {
 				logger.debug("No root dn found, adding root entries...");
 				addRootEntries(username);
 			}
@@ -76,7 +78,7 @@ public class Loader {
 				adminSession.add(entryGmail);
 			}
 			// dn:
-			// ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+			// ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
 			final LdapDN dnUsername = new LdapDN("ou=" + username + ",o=gmail," + ROOT_DN);
 			if (!adminSession.exists(dnUsername)) {
 				final ServerEntry entryUsername = service.newEntry(dnUsername);
@@ -85,7 +87,7 @@ public class Loader {
 				adminSession.add(entryUsername);
 			}
 			// dn:
-			// ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+			// ou=Users,ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
 			final LdapDN dnUsers = new LdapDN("ou=Users,ou=" + username + ",o=gmail," + ROOT_DN);
 			if (!adminSession.exists(dnUsers)) {
 				final ServerEntry entryUsers = service.newEntry(dnUsers);
@@ -94,7 +96,7 @@ public class Loader {
 				adminSession.add(entryUsers);
 			}
 			// dn:
-			// ou=Groups,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
+			// ou=Groups,ou=[username],o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
 			final LdapDN dnGroups = new LdapDN("ou=Groups,ou=" + username + ",o=gmail," + ROOT_DN);
 			if (!adminSession.exists(dnGroups)) {
 				final ServerEntry entryGroups = service.newEntry(dnGroups);
@@ -113,7 +115,8 @@ public class Loader {
 			// dn:
 			// uid=[userid],ou=Users,ou=benjamin.francisoud,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
 			final String dn = "uid=" + user.getUid() + ",ou=Users,ou=" + username + ",o=gmail," + ROOT_DN;
-			final LdapDN dnUser = new LdapDN(dn);
+			logger.debug(dn);
+			final LdapDN dnUser = new LdapDN(dn.replace('+', '_'));
 			// TODO do something when entry already exist (update)
 			if (!service.getAdminSession().exists(dnUser)) {
 				entryUser = service.newEntry(dnUser);
