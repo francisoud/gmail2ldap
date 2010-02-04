@@ -62,8 +62,8 @@ public class SynchronizeListener implements ActionListener {
 			}
 			logger.info("Total Entries: " + entries.size());
 			transaction.commit();
-		} catch (Exception e) {
-			logger.error("Rollback changes: " + e.getMessage(), e);
+		} catch (Throwable t) {
+			logger.error("Rollback changes: " + t.getMessage(), t);
 			transaction.rollback();
 		}
 	}
