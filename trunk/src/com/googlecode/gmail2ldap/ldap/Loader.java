@@ -5,9 +5,7 @@ import java.util.UUID;
 
 import org.apache.directory.server.core.CoreSession;
 import org.apache.directory.server.core.DirectoryService;
-import org.apache.directory.server.core.entry.ClonedServerEntry;
 import org.apache.directory.server.core.entry.ServerEntry;
-import org.apache.directory.server.core.filtering.EntryFilteringCursor;
 import org.apache.directory.server.core.partition.Partition;
 import org.apache.directory.shared.ldap.name.LdapDN;
 import org.apache.directory.shared.ldap.name.Rdn;
@@ -187,16 +185,18 @@ public class Loader {
 		try {
 			final CoreSession adminSession = service.getAdminSession();
 
+			final DirectoryUtil util = new DirectoryUtil(service);
 			final LdapDN ldapDnUsers = new LdapDN(dnUsers);
 			final LdapDN ldapDnTmp = new LdapDN(dnTmp);
 			if (adminSession.exists(ldapDnUsers)) {
-				adminSession.delete(ldapDnUsers);
+				util.deleteRecursive(ldapDnUsers);
 				final boolean deleteOldRdn = true;
 				final Rdn newRdn = new Rdn("ou=Users");
 				adminSession.rename(ldapDnTmp, newRdn, deleteOldRdn);
 				// adminSession.moveAndRename(ldapDnTmp, new LdapDN(dnUsername),
 				// newRdn, deleteOldRdn);
 			}
+			dnTmp = null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -209,17 +209,12 @@ public class Loader {
 		try {
 			final CoreSession adminSession = service.getAdminSession();
 
+			final DirectoryUtil util = new DirectoryUtil(service);
 			final LdapDN ldapDnTmp = new LdapDN(dnTmp);
 			if (adminSession.exists(ldapDnTmp)) {
-				final String filter = "+(objectClass=person)";
-				final EntryFilteringCursor cursor = adminSession.search(ldapDnTmp, filter);
-				while (cursor.next()) {
-					ClonedServerEntry entry = cursor.get();
-					logger.debug("deleting: " + entry.getDn().toString());
-					adminSession.delete(entry.getDn());
-				}
-				adminSession.delete(ldapDnTmp);
+				util.deleteRecursive(ldapDnTmp);
 			}
+			dnTmp = null;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -43,8 +43,9 @@ public class Main {
 		final DirectoryService service = server.getLdapServer().getDirectoryService();
 		final ProjectSystemTray systemTray = new ProjectSystemTray();
 
+		logger.info("Accounts:");
 		for (final Account account : accounts) {
-			logger.info(account.getUsername() + " " + account.getEmail() + " " + account.getPassword());
+			logger.info("\t" + account.getUsername() + " " + account.getEmail());
 			final Loader loader = new Loader(service, account.getUsername());
 			loader.createRoot();
 
