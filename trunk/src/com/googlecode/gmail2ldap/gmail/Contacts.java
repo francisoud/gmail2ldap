@@ -15,22 +15,23 @@ import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import com.googlecode.gmail2ldap.config.Account;
+import com.googlecode.gmail2ldap.config.Config;
 
 public class Contacts {
 
 	private static final String APP_NAME_SUFFIX = "-gmail2ldap.code.google.com-1.x";
 
-	// TODO make it configurable
-	private static final int MAX_RESULTS = 10;
-
 	private final Account account;
+
+	private final Config config;
 
 	private ContactsService service;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public Contacts(final Account account) {
+	public Contacts(final Config config, final Account account) {
 		this.account = account;
+		this.config = config;
 	}
 
 	/**
@@ -48,7 +49,8 @@ public class Contacts {
 			sb.append("://www.google.com/m8/feeds/contacts/");
 			sb.append(account.getEmail());
 			sb.append("/full?max-results="); // base
-			sb.append(MAX_RESULTS);
+			final String maxResults = config.getProperties().getProperty(Config.GMAIL_MAX_CONTACTS);
+			sb.append(maxResults);
 			final String url = sb.toString();
 			final URL metafeedUrl = new URL(url);
 			logger.debug("Getting Contacts entries from " + metafeedUrl.toString());

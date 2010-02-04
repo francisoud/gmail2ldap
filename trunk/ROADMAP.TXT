@@ -2,12 +2,9 @@ Add splash screen at startup: (-splash:gdata-contacts-icon.png)
 Externilize apacheds in external file (config.properties) especially allow anonymous + user/password of admin session (security reason)
 Create installation doc
 Create setup doc
-Create thundrbird documentation
 Use winamp like installer to add shortcut to desktop
 Close dos windows after program startup
 Use quartz to schedule synchronize
-Create a transaction system (begin/commit/rollback) to avoid network issues and keep a clean state in all case 
-	(create temp dir, populate it, replace current with temp one when it's done)
 Add replication/referal config param
 Add group feed
-Replace User.uid with real UUID
+Fix apacheds error message

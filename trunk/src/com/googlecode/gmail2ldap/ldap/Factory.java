@@ -1,5 +1,8 @@
 package com.googlecode.gmail2ldap.ldap;
 
+import static com.googlecode.gmail2ldap.ldap.Constants.PARTITION_DN;
+import static com.googlecode.gmail2ldap.ldap.Constants.PARTITION_ID;
+
 import java.io.File;
 
 import org.apache.directory.server.core.DefaultDirectoryService;
@@ -28,10 +31,11 @@ public class Factory {
 		final File workingDir = (File) new File(tmpDir);
 		service.setWorkingDirectory(workingDir);
 
+		logger.info("Storing contacts under: " + tmpDir + PARTITION_ID);
+
 		final DirectoryUtil util = new DirectoryUtil(service);
 
-		// TODO make it configurable
-		final Partition partition = util.addPartition(Constants.PARTITION_ID, Constants.PARTITION_DN);
+		final Partition partition = util.addPartition(PARTITION_ID, PARTITION_DN);
 		// Index some attributes on the partition
 		util.addIndex(partition, "objectClass", "ou", "uid");
 

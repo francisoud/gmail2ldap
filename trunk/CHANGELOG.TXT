@@ -9,7 +9,10 @@
 * added bat/sh startup scripts
 * update manifest file with version and product info during packaging
 * created CHANGELOG and ROADMAP files
-* User accounts informations externalize in xml file (accounts.xml)
-* Handle multiple accounts
-* Handle google apps email type
+* user accounts informations externalize in xml file (accounts.xml)
+* handle multiple accounts
+* handle google apps email type
+* replace User.uid with real UUID
+* create a transaction system (begin/commit/rollback) to avoid network issues and keep a clean state in all case 
+	(create temp dir, populate it, replace current with temp one when it's done)
 
