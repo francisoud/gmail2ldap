@@ -40,7 +40,7 @@ public class User {
 			final String tmpFirstName = getFirstName();
 			final String tmpLastName = getLastName();
 			if (tmpFirstName.equalsIgnoreCase(tmpLastName)) {
-				fullName = getDeprecatedUid();
+				fullName = getFirstPartOfEmail();
 			} else {
 				fullName = tmpFirstName + " " + tmpLastName;
 			}
@@ -52,24 +52,14 @@ public class User {
 		this.fullName = fullName;
 	}
 
-	/**
-	 * @deprecated wrong uid
-	 */
-	public String getDeprecatedUid() {
-		if (email == null) {
-			throw new IllegalStateException("email can't be null");
-		}
-		return email.substring(0, email.indexOf("@"));
-	}
-
 	public String getFirstName() {
 		if (firstName == null) {
-			final int index = getDeprecatedUid().indexOf(POINT);
+			final int index = getFirstPartOfEmail().indexOf(POINT);
 			if (index > 0) {
-				firstName = getDeprecatedUid().substring(0, index);
+				firstName = getFirstPartOfEmail().substring(0, index);
 			} else {
 				logger.debug("no first name");
-				return getDeprecatedUid();
+				return getFirstPartOfEmail();
 			}
 		}
 		return firstName;
@@ -81,12 +71,12 @@ public class User {
 
 	public String getLastName() {
 		if (lastName == null) {
-			final int index = getDeprecatedUid().indexOf(POINT);
+			final int index = getFirstPartOfEmail().indexOf(POINT);
 			if (index > 0) {
-				lastName = getDeprecatedUid().substring(index + 1, getDeprecatedUid().length());
+				lastName = getFirstPartOfEmail().substring(index + 1, getFirstPartOfEmail().length());
 			} else {
 				logger.debug("no last name");
-				return getDeprecatedUid();
+				return getFirstPartOfEmail();
 			}
 		}
 		return lastName;
@@ -98,7 +88,7 @@ public class User {
 
 	public String getNickName() {
 		if (nickName == null) {
-			nickName = getDeprecatedUid();
+			nickName = getFirstPartOfEmail();
 		}
 		return nickName;
 	}
@@ -113,5 +103,12 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	private String getFirstPartOfEmail() {
+		if (email == null) {
+			throw new IllegalStateException("email can't be null");
+		}
+		return email.substring(0, email.indexOf("@"));
 	}
 }
