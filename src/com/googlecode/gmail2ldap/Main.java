@@ -49,7 +49,7 @@ public class Main {
 			final Loader loader = new Loader(service, account.getUsername());
 			loader.createRoot();
 
-			final Contacts contacts = new Contacts(account);
+			final Contacts contacts = new Contacts(config, account);
 			final ActionListener synchronizeListener = new SynchronizeListener(contacts, loader);
 
 			final MenuItem synchronizeItem = new MenuItem(account.getEmail());

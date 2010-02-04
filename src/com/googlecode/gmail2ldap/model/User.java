@@ -1,5 +1,7 @@
 package com.googlecode.gmail2ldap.model;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,8 @@ public class User {
 	private static final char POINT = '.';
 
 	private transient static final Logger logger = LoggerFactory.getLogger(User.class);
+
+	private UUID uid;
 
 	private String firstName;
 
@@ -19,12 +23,24 @@ public class User {
 
 	private String email;
 
+	public User() {
+		uid = UUID.randomUUID();
+	}
+
+	public UUID getUid() {
+		return uid;
+	}
+
+	public void setUid(UUID uid) {
+		this.uid = uid;
+	}
+
 	public String getFullName() {
 		if (fullName == null) {
 			final String tmpFirstName = getFirstName();
 			final String tmpLastName = getLastName();
 			if (tmpFirstName.equalsIgnoreCase(tmpLastName)) {
-				fullName = getUid();
+				fullName = getDeprecatedUid();
 			} else {
 				fullName = tmpFirstName + " " + tmpLastName;
 			}
@@ -36,7 +52,10 @@ public class User {
 		this.fullName = fullName;
 	}
 
-	public String getUid() {
+	/**
+	 * @deprecated wrong uid
+	 */
+	public String getDeprecatedUid() {
 		if (email == null) {
 			throw new IllegalStateException("email can't be null");
 		}
@@ -45,12 +64,12 @@ public class User {
 
 	public String getFirstName() {
 		if (firstName == null) {
-			final int index = getUid().indexOf(POINT);
+			final int index = getDeprecatedUid().indexOf(POINT);
 			if (index > 0) {
-				firstName = getUid().substring(0, index);
+				firstName = getDeprecatedUid().substring(0, index);
 			} else {
 				logger.debug("no first name");
-				return getUid();
+				return getDeprecatedUid();
 			}
 		}
 		return firstName;
@@ -62,12 +81,12 @@ public class User {
 
 	public String getLastName() {
 		if (lastName == null) {
-			final int index = getUid().indexOf(POINT);
+			final int index = getDeprecatedUid().indexOf(POINT);
 			if (index > 0) {
-				lastName = getUid().substring(index + 1, getUid().length());
+				lastName = getDeprecatedUid().substring(index + 1, getDeprecatedUid().length());
 			} else {
 				logger.debug("no last name");
-				return getUid();
+				return getDeprecatedUid();
 			}
 		}
 		return lastName;
@@ -79,7 +98,7 @@ public class User {
 
 	public String getNickName() {
 		if (nickName == null) {
-			nickName = getUid();
+			nickName = getDeprecatedUid();
 		}
 		return nickName;
 	}

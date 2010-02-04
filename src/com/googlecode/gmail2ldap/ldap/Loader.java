@@ -128,9 +128,10 @@ public class Loader {
 		}
 		final ServerEntry entryUser;
 		try {
+			final String uid = user.getUid().toString();
 			// dn:
 			// uid=[userid],ou=Users,ou=Tmp_123,o=gmail,dc=gmail2ldap,dc=googlecode,dc=com
-			final String dn = "uid=" + user.getUid() + "," + dnTmp;
+			final String dn = "uid=" + uid + "," + dnTmp;
 			logger.debug(dn);
 			final LdapDN dnUser = new LdapDN(dn.replace('+', '_'));
 			entryUser = service.newEntry(dnUser);
@@ -138,7 +139,7 @@ public class Loader {
 					"organizationalPerson");
 
 			// uid: mplanck
-			entryUser.add("uid", user.getUid());
+			entryUser.add("uid", uid);
 			// cn: Max Planck
 			entryUser.add("cn", user.getFullName());
 			// givenname: Max
@@ -151,10 +152,7 @@ public class Loader {
 
 			service.getAdminSession().add(entryUser);
 		} catch (Exception e) {
-			// TODO handle same uid exception
-			// FIXME go on as if nothing had append
-			// throw new RuntimeException(e);
-			logger.error(e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 	}
 
