@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="sandbox"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/apacheds/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/apacheds-all-1.5.5.jar" sourcepath="D:/development/ldap/apacheds/svn/tags/1.5.5/protocol-ldap/src/main/java"/>
+	<classpathentry kind="lib" path="lib/apacheds/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/shared-asn1-0.9.15.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/shared-ldap-0.9.15.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/shared-ldap-constants-0.9.15.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/slf4j-api-1.5.6.jar"/>
+	<classpathentry kind="lib" path="lib/apacheds/slf4j-log4j12-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/quartz-1.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/google/deps/google-collect-1.0-rc1.jar"/>
+	<classpathentry kind="lib" path="lib/google/gdata-contacts-meta-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/google/gdata-contacts-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

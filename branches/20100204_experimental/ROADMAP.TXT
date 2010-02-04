@@ -1,0 +1,11 @@
+Add splash screen at startup: (-splash:gdata-contacts-icon.png)
+Externilize apacheds in external file (config.properties) especially allow anonymous + user/password of admin session (security reason)
+Create installation doc
+Create setup doc
+Use winamp like installer to add shortcut to desktop
+Close dos windows after program startup
+Use quartz to schedule synchronize
+Add replication/referal config param
+Add group feed
+Fix apacheds error message
+Add system tray notifications
