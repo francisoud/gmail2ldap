@@ -2,16 +2,25 @@ package com.googlecode.gmail2ldap.ldap;
 
 import java.util.HashSet;
 
+import org.apache.directory.server.core.CoreSession;
 import org.apache.directory.server.core.DirectoryService;
 import org.apache.directory.server.core.entry.ServerEntry;
+import org.apache.directory.server.core.filtering.EntryFilteringCursor;
 import org.apache.directory.server.core.partition.Partition;
 import org.apache.directory.server.core.partition.impl.btree.jdbm.JdbmIndex;
 import org.apache.directory.server.core.partition.impl.btree.jdbm.JdbmPartition;
 import org.apache.directory.server.xdbm.Index;
+import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.name.LdapDN;
+import org.apache.directory.shared.ldap.schema.AttributeTypeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DirectoryUtil {
 
 	private final DirectoryService service;
+
+	private static final Logger LOG = LoggerFactory.getLogger(DirectoryUtil.class);
 
 	public DirectoryUtil(final DirectoryService service) {
 		this.service = service;
@@ -58,5 +67,23 @@ public class DirectoryUtil {
 		}
 
 		((JdbmPartition) partition).setIndexedAttributes(indexedAttributes);
+	}
+
+	public void deleteRecursive(LdapDN baseDn) {
+		LOG.debug("deleteRecursive");
+		final HashSet<AttributeTypeOptions> attributes = new HashSet<AttributeTypeOptions>();
+		try {
+			final CoreSession adminSession = service.getAdminSession();
+			final EntryFilteringCursor entries = adminSession.list(baseDn, AliasDerefMode.DEREF_ALWAYS, attributes);
+			while (entries.next()) {
+				LdapDN entryDn = entries.get().getDn();
+				LOG.debug("deleting entry: " + entryDn);
+				adminSession.delete(entryDn);
+			}
+			LOG.debug("deleting baseDn: " + baseDn);
+			adminSession.delete(baseDn);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
