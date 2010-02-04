@@ -8,3 +8,4 @@ Use quartz to schedule synchronize
 Add replication/referal config param
 Add group feed
 Fix apacheds error message
+Add system tray notifications
