@@ -29,9 +29,9 @@ public class Contacts {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public Contacts(final Config config, final Account account) {
+	public Contacts(final Account account) {
 		this.account = account;
-		this.config = config;
+		this.config = Config.getSingleton();
 	}
 
 	/**

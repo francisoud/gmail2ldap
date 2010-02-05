@@ -1,4 +1,4 @@
-clear
-java -jar "gmail2ldap-1.0.jar" $1 $2 $3
+#!/bin/bash
 
- 
+# need sudo to start ldap on port 389
+sudo java -jar "gmail2ldap-1.0.jar" 

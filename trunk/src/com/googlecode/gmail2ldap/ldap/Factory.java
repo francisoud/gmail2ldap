@@ -13,6 +13,8 @@ import org.apache.directory.server.protocol.shared.transport.TcpTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.googlecode.gmail2ldap.config.Config;
+
 public class Factory {
 
 	private static final Logger logger = LoggerFactory.getLogger(Factory.class);
@@ -26,12 +28,11 @@ public class Factory {
 		service.getChangeLog().setEnabled(false);
 		service.setDenormalizeOpAttrsEnabled(true);
 
-		final String tmpDir = System.getProperty("java.io.tmpdir");
-		logger.debug(tmpDir);
-		final File workingDir = (File) new File(tmpDir);
+		final String storeFolder = Config.getSingleton().getStoreFolder();
+		final File workingDir = (File) new File(storeFolder);
 		service.setWorkingDirectory(workingDir);
 
-		logger.info("Storing contacts under: " + tmpDir + PARTITION_ID);
+		logger.info("Storing contacts under: " + storeFolder + PARTITION_ID);
 
 		final DirectoryUtil util = new DirectoryUtil(service);
 
