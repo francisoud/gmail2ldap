@@ -1,3 +1,8 @@
+== version 1.1 ==
+* added system tray notifications
+* fix sh script (wasn't working in previous version)
+* externalize store folder
+
 == version 1.0 ==
 * added embedded ldap server (apacheds)
 * created root structure of ldap at startup

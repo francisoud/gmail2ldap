@@ -6,7 +6,6 @@ Use quartz to schedule synchronize
 Add replication/referal config param
 Add group feed
 Fix apacheds error msg: [ERROR] attributeType w/ OID 2.5.4.16 not registered!
-Add system tray notifications
 
 Fix bug under linux:
 [ INFO] Storing contacts under: /tmpgmail2ldap
