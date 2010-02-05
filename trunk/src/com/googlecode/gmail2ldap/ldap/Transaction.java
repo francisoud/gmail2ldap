@@ -5,26 +5,26 @@ import org.slf4j.LoggerFactory;
 
 public class Transaction {
 
-	private final Loader loader;
+	private final SchemaAdministrator administrator;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public Transaction(final Loader loader) {
-		this.loader = loader;
+		this.administrator = loader.getAdministrator();
 	}
 
 	public void begin() {
 		logger.info("Begin transaction");
-		loader.createTmpNode();
+		administrator.createTmpNode();
 	}
 
 	public void commit() {
 		logger.info("Commit transaction");
-		loader.replaceUsersNode();
+		administrator.replaceUsersNode();
 	}
 
 	public void rollback() {
 		logger.info("Rollback transaction");
-		loader.deleteTmpNode();
+		administrator.deleteTmpNode();
 	}
 }

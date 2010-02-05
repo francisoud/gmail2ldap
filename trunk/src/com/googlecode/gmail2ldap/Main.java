@@ -1,7 +1,6 @@
 package com.googlecode.gmail2ldap;
 
 import java.awt.MenuItem;
-import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -13,10 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.googlecode.gmail2ldap.config.Account;
 import com.googlecode.gmail2ldap.config.Config;
-import com.googlecode.gmail2ldap.gmail.Contacts;
 import com.googlecode.gmail2ldap.gui.ProjectSystemTray;
-import com.googlecode.gmail2ldap.gui.SynchronizeListener;
 import com.googlecode.gmail2ldap.ldap.Loader;
+import com.googlecode.gmail2ldap.ldap.SchemaAdministrator;
 import com.googlecode.gmail2ldap.ldap.Server;
 
 public class Main {
@@ -39,24 +37,17 @@ public class Main {
 
 		final Server server = new Server();
 		server.start();
-
 		final DirectoryService service = server.getLdapServer().getDirectoryService();
-		final ProjectSystemTray systemTray = new ProjectSystemTray();
-
+		final SchemaAdministrator administrator = new SchemaAdministrator(service);
 		logger.info("Accounts:");
 		for (final Account account : accounts) {
 			logger.info("\t" + account.getUsername() + " " + account.getEmail());
-			final Loader loader = new Loader(service, account.getUsername());
-			loader.createRoot();
-
-			final Contacts contacts = new Contacts(account);
-			final ActionListener synchronizeListener = new SynchronizeListener(contacts, loader);
-
-			final MenuItem synchronizeItem = new MenuItem(account.getEmail());
-			synchronizeItem.addActionListener(synchronizeListener);
-			synchronizeItems.add(synchronizeItem);
+			administrator.setUsername(account.getUsername());
+			administrator.createRoot();
 		}
-		systemTray.setSynchronizeItems(synchronizeItems);
+		administrator.reset();
+		final ProjectSystemTray systemTray = new ProjectSystemTray(new Loader(administrator));
+		systemTray.setAccounts(accounts);
 		systemTray.start();
 	}
 }
