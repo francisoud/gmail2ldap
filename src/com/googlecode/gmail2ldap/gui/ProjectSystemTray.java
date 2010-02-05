@@ -7,6 +7,7 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,20 +16,28 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.googlecode.gmail2ldap.config.Account;
+import com.googlecode.gmail2ldap.gmail.Contacts;
+import com.googlecode.gmail2ldap.ldap.Loader;
+import com.googlecode.gmail2ldap.ldap.Transaction;
+
 public class ProjectSystemTray {
 
-	private final Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("system-users.png"));
+	private final Image defaultImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("system-users.png"));
+
+	private final Image busyImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("view-refresh.png"));
+
+	private final Image warningImage = Toolkit.getDefaultToolkit().getImage(
+			getClass().getResource("dialog-warning.png"));
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private List<MenuItem> synchronizeItems = new ArrayList<MenuItem>();
+	private List<Account> accounts = new ArrayList<Account>();
 
-	public List<MenuItem> getSynchronizeItems() {
-		return synchronizeItems;
-	}
+	private final Loader loader;
 
-	public void setSynchronizeItems(List<MenuItem> synchronizeItems) {
-		this.synchronizeItems = synchronizeItems;
+	public ProjectSystemTray(final Loader loader) {
+		this.loader = loader;
 	}
 
 	public void start() {
@@ -39,26 +48,52 @@ public class ProjectSystemTray {
 
 			final PopupMenu popup = new PopupMenu();
 
+			trayIcon = new TrayIcon(defaultImage, "gmail2ldap", popup);
+
 			popup.add("Synchronize:");
-			for (final MenuItem synchronizeItem : synchronizeItems) {
+
+			for (final Account account : accounts) {
+				final Contacts contacts = new Contacts(account);
+				final ActionListener synchronizeListener = new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						trayIcon.setImage(busyImage);
+						trayIcon.setToolTip("Synchronising...");
+						logger.info("Synchronizing...");
+						loader.getAdministrator().setUsername(account.getUsername());
+						final Transaction transaction = new Transaction(loader);
+						try {
+							transaction.begin();
+							final int entries = loader.addUsers(contacts);
+							logger.info("Total Entries: " + entries);
+							transaction.commit();
+							trayIcon.displayMessage("gmail2ldap", entries + " contacts synchronized", MessageType.INFO);
+							trayIcon.setImage(defaultImage);
+							trayIcon.setToolTip("gmail2ldap");
+						} catch (Throwable t) {
+							logger.error("Rollback changes: " + t.getMessage(), t);
+							transaction.rollback();
+							trayIcon.setImage(warningImage);
+							trayIcon.setToolTip("gmail2ldap");
+							trayIcon.displayMessage("gmail2ldap", "An error occured while synchronizing",
+									MessageType.WARNING);
+						}
+
+					}
+				};
+
+				final MenuItem synchronizeItem = new MenuItem(account.getEmail());
+				synchronizeItem.addActionListener(synchronizeListener);
 				popup.add(synchronizeItem);
 			}
+			loader.getAdministrator().reset();
 			popup.add("");
 
 			final MenuItem exitItem = getExitMenu();
 			popup.add(exitItem);
 
-			trayIcon = new TrayIcon(image, "gmail2ldap", popup);
-
-			final ActionListener actionListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					trayIcon.displayMessage("Action Event", "An Action Event Has Been Performed!",
-							TrayIcon.MessageType.INFO);
-				}
-			};
-
 			trayIcon.setImageAutoSize(true);
-			trayIcon.addActionListener(actionListener);
 
 			try {
 				tray.add(trayIcon);
@@ -80,5 +115,13 @@ public class ProjectSystemTray {
 		final MenuItem exitItem = new MenuItem("Exit");
 		exitItem.addActionListener(exitListener);
 		return exitItem;
+	}
+
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(List<Account> accounts) {
+		this.accounts = accounts;
 	}
 }

@@ -89,5 +89,7 @@
 	<!-- - - - - - - - - - - - - - - - - - -->
 	<target name="clean" description="delete build and dist directories">
 		<delete dir="${build.dir}"/>
+		<delete dir="logs"/>
+		<delete dir="store"/>
 	</target>
 </project>
