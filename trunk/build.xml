@@ -14,7 +14,7 @@
 	<property name="classes.dir" location="${build.dir}/classes" />
 	<property name="dist.dir" location="${build.dir}/dist" />
 	
-	<property name="jar.file" value="${ant.project.name}-${version}.jar"/>
+	<property name="jar.file" value="${ant.project.name}.jar"/>
 	<property name="zip.file" value="${ant.project.name}-${version}.zip"/>
 
 	<path id="classpath">
