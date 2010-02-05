@@ -2,6 +2,8 @@ package com.googlecode.gmail2ldap.model;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +111,17 @@ public class User {
 		if (email == null) {
 			throw new IllegalStateException("email can't be null");
 		}
-		return email.substring(0, email.indexOf("@"));
+		if (email.indexOf("@") > 0) {
+			return email.substring(0, email.indexOf("@"));
+		} else {
+			logger.warn("Invalid email: '" + email + "' for user: " + toString());
+			logger.warn("You'd better change this in google contacts !");
+			return "_invalid email_";
+		}
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }
