@@ -70,11 +70,6 @@ public class Loader {
 			final List<Email> emails = entry.getEmailAddresses();
 			if (emails.size() > 0) {
 				final User user = new User();
-				for (final Email email : emails) {
-					user.setEmail(email.getAddress());
-					// user.setNickName(email.getDisplayName());
-					break; // only keep first email
-				}
 				if (entry.getNickname() != null) {
 					user.setNickName(entry.getNickname().getValue());
 				}
@@ -85,6 +80,11 @@ public class Loader {
 					if (entry.getName().getFamilyName() != null) {
 						user.setLastName(entry.getName().getFamilyName().getValue());
 					}
+				}
+				for (final Email email : emails) {
+					user.setEmail(email.getAddress());
+					// user.setNickName(email.getDisplayName());
+					break; // only keep first email
 				}
 				logger.debug(ToStringBuilder.reflectionToString(user, ToStringStyle.MULTI_LINE_STYLE));
 				addUser(user);

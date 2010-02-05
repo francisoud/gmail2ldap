@@ -1,3 +1,6 @@
+== version 1.2 ==
+* handle case when a contacts email is invalid (no @) added warning in logs
+
 == version 1.1 ==
 * added system tray notifications
 * fix sh script (wasn't working in previous version)
