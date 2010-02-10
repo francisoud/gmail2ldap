@@ -111,13 +111,10 @@ public class User {
 		if (email == null) {
 			throw new IllegalStateException("email can't be null");
 		}
-		if (email.indexOf("@") > 0) {
-			return email.substring(0, email.indexOf("@"));
-		} else {
-			logger.warn("Invalid email: '" + email + "' for user: " + toString());
-			logger.warn("You'd better change this in google contacts !");
-			return "_invalid email_";
+		if (email.indexOf("@") < 0) {
+			throw new IllegalStateException("email must have a @ in it: " + email);
 		}
+		return email.substring(0, email.indexOf("@"));
 	}
 
 	@Override
