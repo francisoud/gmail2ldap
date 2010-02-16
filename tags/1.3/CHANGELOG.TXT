@@ -1,0 +1,31 @@
+== version 1.3 ==
+* simplify 1.2 code for no @ case
+* remove .bat since you just need to click on the jar (if javaw is correctly installed)
+* tested with chineese contact first/last name: test passed
+ 
+== version 1.2 ==
+* handle case when a contacts email is invalid (no @) added warning in logs
+
+== version 1.1 ==
+* added system tray notifications
+* fix sh script (wasn't working in previous version)
+* externalize store folder
+
+== version 1.0 ==
+* added embedded ldap server (apacheds)
+* created root structure of ldap at startup
+* use gdata api to call contacts web service
+* added system tray + synchronize button
+* using sl4j to log informations
+* make username/password configurable (program args)
+* created packaging script (ant)
+* added bat/sh startup scripts
+* update manifest file with version and product info during packaging
+* created CHANGELOG and ROADMAP files
+* user accounts informations externalize in xml file (accounts.xml)
+* handle multiple accounts
+* handle google apps email type
+* replace User.uid with real UUID
+* create a transaction system (begin/commit/rollback) to avoid network issues and keep a clean state in all case 
+	(create temp dir, populate it, replace current with temp one when it's done)
+

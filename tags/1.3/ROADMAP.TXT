@@ -1,0 +1,28 @@
+Externilize apacheds in external file (config.properties) especially allow anonymous + user/password of admin session (security reason)
+Use quartz to schedule synchronize
+Add group feed
+Fix apacheds error msg: [ERROR] attributeType w/ OID 2.5.4.16 not registered!
+
+Fix bug under linux:
+[ INFO] Storing contacts under: /tmpgmail2ldap
+Exception in thread "main" java.lang.RuntimeException:
+java.lang.NullPointerException
+       at com.googlecode.gmail2ldap.ldap.Server.start(Server.java:20)
+       at com.googlecode.gmail2ldap.Main.main(Main.java:41)
+Caused by: java.lang.NullPointerException
+       at org.apache.directory.server.xdbm.search.impl.EqualityEvaluator.evaluate(EqualityEvaluator.java:139)
+       at org.apache.directory.server.xdbm.search.impl.EqualityEvaluator.evaluate(EqualityEvaluator.java:132)
+       at org.apache.directory.server.xdbm.search.impl.AndCursor.matches(AndCursor.java:230)
+       at org.apache.directory.server.xdbm.search.impl.AndCursor.next(AndCursor.java:140)
+       at org.apache.directory.server.core.partition.impl.btree.ServerEntryCursorAdaptor.next(ServerEntryCursorAdaptor.java:179)
+       at org.apache.directory.server.core.filtering.BaseEntryFilteringCursor.next(BaseEntryFilteringCursor.java:498)
+       at org.apache.directory.server.core.ReferralManagerImpl.init(ReferralManagerImpl.java:162)
+       at org.apache.directory.server.core.ReferralManagerImpl.<init>(ReferralManagerImpl.java:74)
+       at org.apache.directory.server.core.referral.ReferralInterceptor.init(ReferralInterceptor.java:216)
+       at org.apache.directory.server.core.interceptor.InterceptorChain.register0(InterceptorChain.java:441)
+       at org.apache.directory.server.core.interceptor.InterceptorChain.register(InterceptorChain.java:397)
+       at org.apache.directory.server.core.interceptor.InterceptorChain.init(InterceptorChain.java:257)
+       at org.apache.directory.server.core.DefaultDirectoryService.initialize(DefaultDirectoryService.java:1617)
+       at org.apache.directory.server.core.DefaultDirectoryService.startup(DefaultDirectoryService.java:971)
+       at com.googlecode.gmail2ldap.ldap.Server.start(Server.java:17)
+       ... 1 more
