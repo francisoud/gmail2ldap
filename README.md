@@ -1,7 +1,10 @@
 # gmail2ldap
 Automatically exported from code.google.com/p/gmail2ldap
 
+
 # Summary #
+
+![https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gdata-contacts-icon.png](https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gdata-contacts-icon.png)
 
 **Provide a synchronized copy of gmail contacts to thunderbird using a local ldap server**
 
