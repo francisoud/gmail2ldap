@@ -21,7 +21,7 @@ Edit accounts.xml with your own email/password.
 
 _Windows_:
 
-![http://gmail2ldap.googlecode.com/svn/trunk/doc/images/windows.png](http://gmail2ldap.googlecode.com/svn/trunk/doc/images/windows.png)
+![https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/windows.png](https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/windows.png)
 
 _Linux_:
 
@@ -32,7 +32,7 @@ _Linux_:
 
 Check your system tray, right click on icon...
 
-| ![http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-tray-windows.png](http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-tray-windows.png) | ![http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-tray.png](http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-tray.png) |
+| ![https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-tray-windows.png](https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-tray-windows.png) | ![https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-tray.png](https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-tray.png) |
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 # Thunderbird #
@@ -44,4 +44,4 @@ Use this parameters:
 gmail2ldap dn value is:
 `dc=gmail2ldap,dc=googlecode,dc=com`
 
-![http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-thunderbird.png](http://gmail2ldap.googlecode.com/svn/trunk/doc/images/gmail2ldap-thunderbird.png)
+![https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-thunderbird.png](https://raw.githubusercontent.com/francisoud/gmail2ldap/master/doc/images/gmail2ldap-thunderbird.png)
